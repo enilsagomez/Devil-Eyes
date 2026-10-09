@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devil Eyes - Experience</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Poppins:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold-glow: #ffd700;
+            --red-glow: #ff1a40;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #07070a;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(185, 28, 28, 0.25) 0%, transparent 60%),
+                radial-gradient(circle at 85% 85%, rgba(217, 119, 6, 0.15) 0%, transparent 50%);
+            color: #f3f4f6;
+            min-height: 100vh;
+        }
+
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+
+        .text-glow-red {
+            text-shadow: 0 0 12px rgba(239, 68, 68, 0.7), 0 0 25px rgba(185, 28, 28, 0.4);
+        }
+
+        .text-glow-gold {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.8), 0 0 20px rgba(217, 119, 6, 0.4);
+        }
+
+        .box-glow-red {
+            box-shadow: 0 0 35px rgba(185, 28, 28, 0.2), inset 0 0 15px rgba(185, 28, 28, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .box-glow-gold {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes lyricFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.96);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+        }
+
+        .animate-lyric {
+            animation: lyricFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Estilizado de barra de rango (Scrubber y Volumen) */
+        input[type=range] {
+            accent-color: #ef4444;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 15, 20, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #991b1b;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between p-3 md:p-6 select-none">
+
+    <!-- Header Principal -->
+    <header class="w-full max-w-2xl flex justify-between items-center py-2 px-4 mb-2">
+        <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-red-600 animate-ping"></span>
+            <span class="text-xs font-bold tracking-widest text-red-500 uppercase">Golden Edition</span>
+        </div>
+        <button id="btn-open-help" class="text-xs bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-800/60 px-3 py-1.5 rounded-full transition-all flex items-center space-x-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Guía de Ayuda</span>
+        </button>
+    </header>
+
+    <!-- Contenedor Principal / Tarjeta -->
+    <main class="w-full max-w-xl bg-black/80 backdrop-blur-xl box-glow-red rounded-3xl p-5 md:p-8 flex flex-col justify-between my-auto relative overflow-hidden">
+        
+        <!-- Adorno Neon Superior -->
+        <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-amber-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- Información de la canción -->
+        <div class="text-center mb-4 z-10">
+            <h1 class="font-cinzel text-3xl md:text-5xl font-black text-red-600 text-glow-red tracking-wider uppercase">
+                Devil Eyes
+            </h1>
+            <p class="text-xs md:text-sm text-amber-400 font-medium tracking-[0.25em] uppercase mt-1 text-glow-gold">
+                Hippie Sabotage
+            </p>
+        </div>
+
+        <!-- Reproductor Multimedia Integrado -->
+        <div class="bg-zinc-950/80 border border-red-900/40 rounded-2xl p-4 mb-5 z-10">
+            <!-- Audio Element (Oculto) -->
+            <audio id="audio-player" src="cancion.mp3" preload="metadata"></audio>
+
+            <!-- Banner de Alerta Audio (Oculto por defecto si todo está bien) -->
+            <div id="audio-warning-banner" class="hidden mb-3 p-2 bg-amber-950/60 border border-amber-800/60 rounded-xl text-center text-xs text-amber-200 flex items-center justify-between">
+                <span>⚠️ Archivo <code>cancion.mp3</code> no detectado localmente. La letra interactiva sigue funcionando.</span>
+                <button id="btn-banner-help" class="underline text-amber-400 font-bold ml-2">¿Cómo arreglar?</button>
+            </div>
+
+            <!-- Scrubber de Tiempo -->
+            <div class="flex items-center space-x-3 mb-3 text-xs text-zinc-400 font-mono">
+                <span id="time-current">00:00</span>
+                <input id="audio-scrubber" type="range" min="0" max="100" value="0" class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer">
+                <span id="time-duration">00:00</span>
+            </div>
+
+            <!-- Botones de Control de Audio -->
+            <div class="flex items-center justify-between">
+                <!-- Control de Volumen -->
+                <div class="flex items-center space-x-1.5 w-1/4">
+                    <button id="btn-mute" class="text-zinc-400 hover:text-red-400 transition">
+                        <svg id="icon-volume" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/></svg>
+                    </button>
+                    <input id="volume-slider" type="range" min="0" max="1" step="0.05" value="0.8" class="w-16 h-1 bg-zinc-800 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- Botones Principales: -10s, Play/Pause, +10s -->
+                <div class="flex items-center space-x-3">
+                    <button id="btn-rewind" class="p-2 text-zinc-400 hover:text-red-400 hover:scale-110 active:scale-95 transition" title="Retroceder 10s">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8L4.066 11.2z"/></svg>
+                    </button>
+
+                    <button id="btn-play-pause" class="w-11 h-11 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.5)] hover:scale-105 active:scale-95 transition">
+                        <svg id="icon-play" class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="icon-pause" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+
+                    <button id="btn-forward" class="p-2 text-zinc-400 hover:text-red-400 hover:scale-110 active:scale-95 transition" title="Adelantar 10s">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.934 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.334-4zM19.934 12.8a1 1 0 000-1.6l-5.334-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.334-4z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Botón Editor de Letra -->
+                <div class="w-1/4 flex justify-end">
+                    <button id="btn-open-editor" class="text-xs text-amber-400 hover:text-amber-300 border border-amber-600/40 bg-amber-950/30 px-2.5 py-1 rounded-lg transition" title="Editar la letra de la canción">
+                        📝 Editar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador y Barra de Progreso de la Letra -->
+        <div class="mb-3 z-10">
+            <div class="flex justify-between items-center text-xs mb-1.5 px-1">
+                <span id="lyric-progress-text" class="text-zinc-400 font-mono">Frase 1 de 23</span>
+                <span id="lyric-percent-text" class="text-amber-400 font-bold font-mono">4%</span>
+            </div>
+            <div class="w-full bg-zinc-900 h-2 rounded-full overflow-hidden border border-zinc-800">
+                <div id="lyric-progress-bar" class="bg-gradient-to-r from-red-600 via-amber-500 to-amber-300 h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Área Central de Visualización de la Frase -->
+        <div class="bg-zinc-950/90 border border-zinc-800/80 rounded-2xl p-6 min-h-[160px] md:min-h-[190px] flex flex-col justify-center items-center text-center my-2 shadow-inner z-10 relative">
+            <div id="lyric-box" class="w-full">
+                <!-- La frase actual se inyecta por JS -->
+                <p id="lyric-text" class="text-lg md:text-2xl font-semibold text-white tracking-wide animate-lyric leading-relaxed">
+                    "Cargando frase..."
+                </p>
+            </div>
+        </div>
+
+        <!-- Botones de Control de la Letra -->
+        <div class="space-y-2 mt-4 z-10">
+            <!-- Botón Grande Principal -->
+            <button id="btn-next-phrase" class="w-full bg-gradient-to-r from-red-700 via-red-600 to-amber-600 hover:from-red-600 hover:to-amber-500 text-white font-bold text-base md:text-lg uppercase tracking-widest py-4 px-6 rounded-2xl shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(245,158,11,0.5)] transform active:scale-[0.98] transition-all border border-amber-400/30 flex items-center justify-center space-x-2">
+                <span>Siguiente frase</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </button>
+
+            <!-- Botones Secundarios (Anterior / Reiniciar) -->
+            <div class="grid grid-cols-2 gap-2">
+                <button id="btn-prev-phrase" class="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 font-medium text-xs md:text-sm py-2.5 px-4 rounded-xl border border-zinc-700/60 transition active:scale-95 flex items-center justify-center space-x-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+                    <span>Frase anterior</span>
+                </button>
+                <button id="btn-reset-phrase" class="bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 font-medium text-xs md:text-sm py-2.5 px-4 rounded-xl border border-zinc-700/60 transition active:scale-95 flex items-center justify-center space-x-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span>Reiniciar</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL EDITOR DE LETRAS EN VIVO -->
+    <div id="modal-editor" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-zinc-900 border border-amber-600/60 rounded-3xl p-6 max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-zinc-800">
+                <h3 class="text-lg font-bold text-amber-400 font-cinzel">📝 Editar Letra de la Canción</h3>
+                <button id="btn-close-editor" class="text-zinc-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <p class="text-xs text-zinc-400 mb-2">Escribe o pega la letra (una frase por cada línea del texto):</p>
+            <textarea id="editor-textarea" class="w-full flex-grow h-60 bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-200 focus:outline-none focus:border-amber-500 custom-scrollbar font-mono resize-none"></textarea>
+
+            <div class="flex space-x-2 mt-4">
+                <button id="btn-restore-default-lyrics" class="w-1/3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium text-xs py-2.5 rounded-xl transition">Restaurar original</button>
+                <button id="btn-save-lyrics" class="w-2/3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-bold text-xs py-2.5 rounded-xl transition">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-4 text-center text-zinc-600 text-xs">
+        Devil Eyes Web App • Hecho con ✨
+    </footer>
+
+    <script>
+        // =====================================================================
+        // ARREGLO DE LETRAS SINTÁCTICAMENTE CORRECTO
+        // =====================================================================
+        const letraOriginal = [
+              "You've got the devil in your eyes",
+            "You went and took me by surprise",
+            "Say what you wanna say, I won't go back",
+            "If you wanna hit the road, then let's go then",
+            "Let's just go and see the world and just show them",
+            "What it really means to live life golden",
+
+             "Yeah, we're golden, baby girl, we're golden",
+             "They about to see a shine 'cause we're golden",
+             "They can never break us down 'cause we're golden",
+             "They about to see us glow 'cause we're golden",
+
+             "Yeah, we're golden, baby girl, we're golden",
+             "They about to see a shine 'cause we're golden",
+             "They can never break us down 'cause we're golden",
+             "They about to see us glow 'cause we're golden",
+
+             "You've got the devil in your eyes",
+             "You went and took me by surprise",
+             "Say what you wanna say, I won't go back",
+             "If you wanna hit the road, then let's go then",
+             "Let's just go and see the world and just show them",
+             "What it really means to live life golden",
+
+             "Yeah, we're golden, babygirl, we're golden",
+             "Yeah, about to see a shine 'cause we're golden",
+             "They can never break us down 'cause we're golden",
+             "They're about to see us glow 'cause we're golden",
+
+             "Yeah, we're golden, babygirl, we're golden",
+             "They about to see a shine 'cause we're golden",
+             "They can never break us down 'cause we're golden",
+             "They about to see us glow 'cause we're golden",
+        ];
+
+        // Estado Global
+        let letraCancion = [...letraOriginal];
+        let currentIndex = 0;
+
+        // Cargar letras personalizadas desde localStorage si existen
+        const savedLyrics = localStorage.getItem('devil_eyes_custom_lyrics');
+        if (savedLyrics) {
+            try {
+                const parsed = JSON.parse(savedLyrics);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    letraCancion = parsed;
+                }
+            } catch (e) {
+                console.error("Error al cargar letras guardadas", e);
+            }
+        }
+
+        // ELEMENTOS DEL DOM
+        const lyricTextEl = document.getElementById('lyric-text');
+        const lyricProgressTextEl = document.getElementById('lyric-progress-text');
+        const lyricPercentTextEl = document.getElementById('lyric-percent-text');
+        const lyricProgressBarEl = document.getElementById('lyric-progress-bar');
+        
+        const btnNextPhrase = document.getElementById('btn-next-phrase');
+        const btnPrevPhrase = document.getElementById('btn-prev-phrase');
+        const btnResetPhrase = document.getElementById('btn-reset-phrase');
+
+        const audioPlayer = document.getElementById('audio-player');
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        const btnRewind = document.getElementById('btn-rewind');
+        const btnForward = document.getElementById('btn-forward');
+        const audioScrubber = document.getElementById('audio-scrubber');
+        const timeCurrent = document.getElementById('time-current');
+        const timeDuration = document.getElementById('time-duration');
+        const volumeSlider = document.getElementById('volume-slider');
+        const btnMute = document.getElementById('btn-mute');
+        const audioWarningBanner = document.getElementById('audio-warning-banner');
+
+        const modalHelp = document.getElementById('modal-help');
+        const btnOpenHelp = document.getElementById('btn-open-help');
+        const btnCloseHelp = document.getElementById('btn-close-help');
+        const btnCloseHelp2 = document.getElementById('btn-close-help-2');
+        const btnBannerHelp = document.getElementById('btn-banner-help');
+
+        const modalEditor = document.getElementById('modal-editor');
+        const btnOpenEditor = document.getElementById('btn-open-editor');
+        const btnCloseEditor = document.getElementById('btn-close-editor');
+        const editorTextarea = document.getElementById('editor-textarea');
+        const btnSaveLyrics = document.getElementById('btn-save-lyrics');
+        const btnRestoreDefaultLyrics = document.getElementById('btn-restore-default-lyrics');
+
+        // ACTUALIZACIÓN DE LA INTERFAZ DE LA LETRA
+        function updateLyricUI() {
+            if (letraCancion.length === 0) return;
+
+            // Transición suave
+            lyricTextEl.classList.remove('animate-lyric');
+            void lyricTextEl.offsetWidth; // Forzar re-flow CSS
+            lyricTextEl.classList.add('animate-lyric');
+
+            // Formatear texto con comillas elegantes
+            lyricTextEl.textContent = `"${letraCancion[currentIndex]}"`;
+
+            // Progreso
+            const total = letraCancion.length;
+            const currentNum = currentIndex + 1;
+            const percentage = Math.round((currentNum / total) * 100);
+
+            lyricProgressTextEl.textContent = `Frase ${currentNum} de ${total}`;
+            lyricPercentTextEl.textContent = `${percentage}%`;
+            lyricProgressBarEl.style.width = `${percentage}%`;
+
+            // Estado de botones
+            btnPrevPhrase.disabled = currentIndex === 0;
+            btnPrevPhrase.style.opacity = currentIndex === 0 ? "0.4" : "1";
+        }
+
+        // CONTROLES DE LA LETRA (TOTALMENTE INDEPENDIENTES DE AUDIO)
+        btnNextPhrase.addEventListener('click', () => {
+            if (currentIndex < letraCancion.length - 1) {
+                currentIndex++;
+            } else {
+                // Si llega al final, hace loop al inicio
+                currentIndex = 0;
+            }
+            updateLyricUI();
+        });
+
+        btnPrevPhrase.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateLyricUI();
+            }
+        });
+
+        btnResetPhrase.addEventListener('click', () => {
+            currentIndex = 0;
+            updateLyricUI();
+        });
+
+        // REPRODUCTOR DE AUDIO CON MANEJO DE ERRORES
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function togglePlayPause() {
+            if (audioPlayer.paused) {
+                audioPlayer.play().then(() => {
+                    iconPlay.classList.add('hidden');
+                    iconPause.classList.remove('hidden');
+                    audioWarningBanner.classList.add('hidden');
+                }).catch(err => {
+                    console.warn("No se pudo iniciar la reproducción del audio:", err);
+                    audioWarningBanner.classList.remove('hidden');
+                });
+            } else {
+                audioPlayer.pause();
+                iconPlay.classList.remove('hidden');
+                iconPause.classList.add('hidden');
+            }
+        }
+
+        btnPlayPause.addEventListener('click', togglePlayPause);
+
+        btnRewind.addEventListener('click', () => {
+            audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 10);
+        });
+
+        btnForward.addEventListener('click', () => {
+            audioPlayer.currentTime = Math.min(audioPlayer.duration || 0, audioPlayer.currentTime + 10);
+        });
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (!isNaN(audioPlayer.duration) && audioPlayer.duration > 0) {
+                const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                audioScrubber.value = percent;
+                timeCurrent.textContent = formatTime(audioPlayer.currentTime);
+                timeDuration.textContent = formatTime(audioPlayer.duration);
+            }
+        });
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            timeDuration.textContent = formatTime(audioPlayer.duration);
+            audioWarningBanner.classList.add('hidden');
+        });
+
+        audioPlayer.addEventListener('error', () => {
+            console.warn("Atención: El archivo de audio cancion.mp3 no se encuentra o no se puede cargar.");
+            audioWarningBanner.classList.remove('hidden');
+        });
+
+        audioScrubber.addEventListener('input', (e) => {
+            if (!isNaN(audioPlayer.duration) && audioPlayer.duration > 0) {
+                const targetTime = (e.target.value / 100) * audioPlayer.duration;
+                audioPlayer.currentTime = targetTime;
+            }
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            audioPlayer.volume = e.target.value;
+        });
+
+        btnMute.addEventListener('click', () => {
+            audioPlayer.muted = !audioPlayer.muted;
+            btnMute.style.opacity = audioPlayer.muted ? "0.4" : "1";
+        });
+
+        // CONTROL DE MODALES
+        function openModal(modal) {
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            modal.classList.add('opacity-100');
+        }
+
+        function closeModal(modal) {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-100');
+        }
+
+        btnOpenHelp.addEventListener('click', () => openModal(modalHelp));
+        btnCloseHelp.addEventListener('click', () => closeModal(modalHelp));
+        btnCloseHelp2.addEventListener('click', () => closeModal(modalHelp));
+        btnBannerHelp.addEventListener('click', () => openModal(modalHelp));
+
+        btnOpenEditor.addEventListener('click', () => {
+            editorTextarea.value = letraCancion.join('\n');
+            openModal(modalEditor);
+        });
+        btnCloseEditor.addEventListener('click', () => closeModal(modalEditor));
+
+        btnSaveLyrics.addEventListener('click', () => {
+            const rawText = editorTextarea.value.trim();
+            if (rawText) {
+                const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                if (lines.length > 0) {
+                    letraCancion = lines;
+                    currentIndex = 0;
+                    localStorage.setItem('devil_eyes_custom_lyrics', JSON.stringify(letraCancion));
+                    updateLyricUI();
+                    closeModal(modalEditor);
+                }
+            }
+        });
+
+        btnRestoreDefaultLyrics.addEventListener('click', () => {
+            letraCancion = [...letraOriginal];
+            currentIndex = 0;
+            localStorage.removeItem('devil_eyes_custom_lyrics');
+            updateLyricUI();
+            closeModal(modalEditor);
+        });
+
+        // INICIALIZACIÓN
+        window.addEventListener('load', () => {
+            updateLyricUI();
+        });
+    </script>
+</body>
+</html>
